@@ -3,45 +3,68 @@ import os
 import subprocess
 import csv
 from PyQt5.QtWidgets import (
-    QApplication, QMainWindow, QPushButton, QVBoxLayout, QWidget, QMessageBox, QLineEdit, QDialog, QLabel, QTextEdit
+    QApplication, QMainWindow, QPushButton, QVBoxLayout, QWidget, QMessageBox, QLineEdit, QDialog, QLabel, QTextEdit, QHBoxLayout
 )
-from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QPixmap, QIcon, QDesktopServices
+from PyQt5.QtCore import Qt, QUrl
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.setWindowTitle("Minimalist GUI")
-        self.resize(300, 200)
+        self.setWindowTitle("Image Tagging")
+        self.setWindowIcon(QIcon('icon.png'))
+        self.resize(300, 300)
         self.center()
 
         self.create_folders()
         self.create_tags_file()
 
-        layout = QVBoxLayout()
+        main_layout = QVBoxLayout()
+
+        # Add the banner image
+        self.banner_label = QLabel()
+        if os.path.exists("banner.png"):
+            pixmap = QPixmap("banner.png")
+            self.banner_label.setPixmap(pixmap)
+            self.banner_label.setAlignment(Qt.AlignCenter)
+        main_layout.addWidget(self.banner_label)
 
         self.input_button = QPushButton("Open Input Folder")
         self.input_button.clicked.connect(self.open_input_folder)
-        layout.addWidget(self.input_button)
+        main_layout.addWidget(self.input_button)
 
         self.output_button = QPushButton("Open Output Folder")
         self.output_button.clicked.connect(self.open_output_folder)
-        layout.addWidget(self.output_button)
+        main_layout.addWidget(self.output_button)
 
         self.process_button = QPushButton("Process Current Input")
         self.process_button.clicked.connect(self.process_input)
-        layout.addWidget(self.process_button)
+        main_layout.addWidget(self.process_button)
 
         self.search_button = QPushButton("Search by Tag")
         self.search_button.clicked.connect(self.search_by_tag)
-        layout.addWidget(self.search_button)
+        main_layout.addWidget(self.search_button)
 
         self.show_tags_button = QPushButton("Show All Tags")
         self.show_tags_button.clicked.connect(self.show_all_tags)
-        layout.addWidget(self.show_tags_button)
+        main_layout.addWidget(self.show_tags_button)
+
+        self.about_button = QPushButton("About")
+        self.about_button.clicked.connect(self.show_about)
+        main_layout.addWidget(self.about_button)
+
+        self.developer_label = QLabel()
+        self.developer_label.setText(
+            'Developed by <a href="mailto:Kirolous_Fouty@aucegypt.edu">Kirolous_Fouty@aucegypt.edu</a>')
+        self.developer_label.setTextInteractionFlags(Qt.TextBrowserInteraction)
+        self.developer_label.setOpenExternalLinks(False)
+        self.developer_label.setAlignment(Qt.AlignCenter)
+        self.developer_label.linkActivated.connect(self.copy_email_to_clipboard)
+        main_layout.addWidget(self.developer_label)
 
         container = QWidget()
-        container.setLayout(layout)
+        container.setLayout(main_layout)
         self.setCentralWidget(container)
 
     def center(self):
@@ -93,6 +116,7 @@ class MainWindow(QMainWindow):
     def show_process_output(self, output):
         dialog = QDialog(self)
         dialog.setWindowTitle("Process Output")
+        dialog.setWindowIcon(QIcon('icon.png'))
         dialog.resize(400, 300)
 
         layout = QVBoxLayout()
@@ -108,6 +132,7 @@ class MainWindow(QMainWindow):
     def search_by_tag(self):
         dialog = QDialog(self)
         dialog.setWindowTitle("Search by Tag")
+        dialog.setWindowIcon(QIcon('icon.png'))
         dialog.resize(300, 150)
 
         layout = QVBoxLayout()
@@ -133,6 +158,7 @@ class MainWindow(QMainWindow):
     def show_all_tags(self):
         dialog = QDialog(self)
         dialog.setWindowTitle("All Tags")
+        dialog.setWindowIcon(QIcon('icon.png'))
         dialog.resize(300, 200)
 
         layout = QVBoxLayout()
@@ -156,8 +182,30 @@ class MainWindow(QMainWindow):
                 tags = [row[0] for row in reader]
         return tags
 
+    def show_about(self):
+        dialog = QDialog(self)
+        dialog.setWindowTitle("About")
+        dialog.setWindowIcon(QIcon('icon.png'))
+        dialog.resize(300, 100)
+
+        layout = QVBoxLayout()
+
+        about_text = QLabel("This part describes the development and license")
+        about_text.setWordWrap(True)
+        layout.addWidget(about_text)
+
+        dialog.setLayout(layout)
+        dialog.exec_()
+
+    def copy_email_to_clipboard(self, link):
+        email_address = "Kirolous_Fouty@aucegypt.edu"
+        clipboard = QApplication.clipboard()
+        clipboard.setText(email_address)
+        QMessageBox.information(self, "Email Copied", f"{email_address} copied to clipboard!")
+
 def main():
     app = QApplication(sys.argv)
+    app.setWindowIcon(QIcon('icon.png'))
     window = MainWindow()
     window.show()
     sys.exit(app.exec_())
