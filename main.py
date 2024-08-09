@@ -42,17 +42,14 @@ class MainWindow(QMainWindow):
         self.process_button.clicked.connect(self.process_input)
         main_layout.addWidget(self.process_button)
 
-        self.search_button = QPushButton("Search by Tag")
-        self.search_button.clicked.connect(self.search_by_tag)
-        main_layout.addWidget(self.search_button)
+        # Add the "Required libraries" button
+        self.libraries_button = QPushButton("Required libraries (please install)")
+        self.libraries_button.clicked.connect(self.show_libraries)
+        main_layout.addWidget(self.libraries_button)
 
-        self.show_tags_button = QPushButton("Show All Tags")
-        self.show_tags_button.clicked.connect(self.show_all_tags)
-        main_layout.addWidget(self.show_tags_button)
-
-        self.about_button = QPushButton("About")
-        self.about_button.clicked.connect(self.show_about)
-        main_layout.addWidget(self.about_button)
+        # self.about_button = QPushButton("About")
+        # self.about_button.clicked.connect(self.show_about)
+        # main_layout.addWidget(self.about_button)
 
         self.developer_label = QLabel()
         self.developer_label.setText(
@@ -129,73 +126,58 @@ class MainWindow(QMainWindow):
         dialog.setLayout(layout)
         dialog.exec_()
 
-    def search_by_tag(self):
+    def show_libraries(self):
         dialog = QDialog(self)
-        dialog.setWindowTitle("Search by Tag")
+        dialog.setWindowTitle("Required Libraries")
         dialog.setWindowIcon(QIcon('icon.png'))
-        dialog.resize(300, 150)
+        dialog.resize(250, 150)
 
         layout = QVBoxLayout()
 
-        label = QLabel('Write tags separated by "OR" or separated by "AND"')
-        layout.addWidget(label)
+        self.libraries_label = QLabel('''pip install einops flash_attn timm
+        pip install transformers
+        pip install tensorflow
+        pip install flax
+        pip3 install torch torchvision torchaudio
+        pip install einops flash_attn timm
+        pip install einops
+        pip install timm
+        pip install flash_attn
+        conda install -c nvidia cuda-python
+        pip install packaging
+        pip uninstall -y ninja && pip install ninja
+        pip install openpyxl
+        pip install googletrans==4.0.0-rc1
+        pip install einops flash_attn timm''')
+        self.libraries_label.setAlignment(Qt.AlignCenter)
+        layout.addWidget(self.libraries_label)
 
-        self.tag_input = QLineEdit()
-        layout.addWidget(self.tag_input)
-
-        search_button = QPushButton("Search")
-        search_button.clicked.connect(self.perform_search)
-        layout.addWidget(search_button)
+        copy_button = QPushButton("Copy Lines")
+        copy_button.clicked.connect(self.copy_libraries_to_clipboard)
+        layout.addWidget(copy_button)
 
         dialog.setLayout(layout)
         dialog.exec_()
 
-    def perform_search(self):
-        tags = self.tag_input.text()
-        # Placeholder for search logic
-        QMessageBox.information(self, "Search by Tag", f"Searching for tags: {tags}")
+    def copy_libraries_to_clipboard(self):
+        clipboard = QApplication.clipboard()
+        clipboard.setText(self.libraries_label.text())
+        QMessageBox.information(self, "Copied", "Required libraries copied to clipboard! \nPlease install Python, Anaconda and CUDA. Then run the copied lines in the terminal.")
 
-    def show_all_tags(self):
-        dialog = QDialog(self)
-        dialog.setWindowTitle("All Tags")
-        dialog.setWindowIcon(QIcon('icon.png'))
-        dialog.resize(300, 200)
+    # def show_about(self):
+    #     dialog = QDialog(self)
+    #     dialog.setWindowTitle("About")
+    #     dialog.setWindowIcon(QIcon('icon.png'))
+    #     dialog.resize(300, 100)
 
-        layout = QVBoxLayout()
+    #     layout = QVBoxLayout()
 
-        tags_text = QTextEdit()
-        tags_text.setReadOnly(True)
-        layout.addWidget(tags_text)
+    #     about_text = QLabel("This part describes the development and license")
+    #     about_text.setWordWrap(True)
+    #     layout.addWidget(about_text)
 
-        tags = self.get_all_tags()
-        tags_text.setPlainText("\n".join(tags))
-
-        dialog.setLayout(layout)
-        dialog.exec_()
-
-    def get_all_tags(self):
-        tags = []
-        if os.path.exists("tags.csv"):
-            with open("tags.csv", "r") as file:
-                reader = csv.reader(file)
-                next(reader)  # Skip the header
-                tags = [row[0] for row in reader]
-        return tags
-
-    def show_about(self):
-        dialog = QDialog(self)
-        dialog.setWindowTitle("About")
-        dialog.setWindowIcon(QIcon('icon.png'))
-        dialog.resize(300, 100)
-
-        layout = QVBoxLayout()
-
-        about_text = QLabel("This part describes the development and license")
-        about_text.setWordWrap(True)
-        layout.addWidget(about_text)
-
-        dialog.setLayout(layout)
-        dialog.exec_()
+    #     dialog.setLayout(layout)
+    #     dialog.exec_()
 
     def copy_email_to_clipboard(self, link):
         email_address = "Kirolous_Fouty@aucegypt.edu"
