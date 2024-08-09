@@ -26,9 +26,9 @@
 <img src="diagram.png" width="300" />
 
 ## Examples and Results:
-<img src="detections.png" width="500" />
-<img src="ex1.png" width="500" />
-<img src="ex2.png" width="500" />
-<img src="ex3.png" width="500" />
-<img src="ex4.png" width="500" />
+<img src="detections.png" width="700" />
+<img src="ex1.png" width="700" />
+<img src="ex2.png" width="700" />
+<img src="ex3.png" width="700" />
+<img src="ex4.png" width="700" />
 
