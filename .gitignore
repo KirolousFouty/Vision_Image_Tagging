@@ -9,6 +9,9 @@ tasks.json
 *.exe
 *.tmp
 tempCodeRunnerFile.py
-.input/
-.output/
+input/
+output/
 config.py
+dist/
+build/
+your_script.spec

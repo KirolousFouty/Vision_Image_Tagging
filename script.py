@@ -1,7 +1,3 @@
-# Mount Google Drive
-from google.colab import drive
-drive.mount('/content/gdrive')
-
 # Import necessary libraries
 from transformers import AutoProcessor, AutoModelForCausalLM
 from PIL import Image, UnidentifiedImageError
